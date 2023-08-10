@@ -1,4 +1,4 @@
-package MenuView;
+package View;
 
 public class Menu {
 
@@ -10,7 +10,8 @@ public class Menu {
         System.out.println("3. Kelola Stok");
         System.out.println("4. Cari Barang");
         System.out.println("5. Tampilkan Stok Barang");
-        System.out.println("6. Tampilkan Log Perubahan");
+        System.out.println("6. Tampilkan Transaksi");
+        System.out.println("7. Tampilkan Log Perubahan");
         System.out.println("0. Keluar");
         System.out.print("Pilihan: ");
     }

@@ -1,15 +1,15 @@
-package WarehouseManagement;
+package Controller;
 
 import Model.Barang;
-import MenuView.Menu;
-
-import java.text.SimpleDateFormat;
+import View.Menu;
+import Model.Transaksi;
 import java.util.*;
 
 // Definisi kelas utama Controller.ManajemenStokGudang
 public class ManajemenStokGudang {
     // List untuk menyimpan stok barang dan log perubahan
     static List<Barang> stokGudang = new ArrayList<>();
+    static List<Transaksi> transaksiGudang = new ArrayList<>();
     static List<String> logPerubahan = new ArrayList<>();
     static Scanner scanner = new Scanner(System.in);
 
@@ -43,21 +43,31 @@ public class ManajemenStokGudang {
             case 3 -> prosesMenuStok();
             case 4 -> cariBarang();
             case 5 -> lihatStok();
-            case 6 -> tampilkanLogPerubahan();
+            case 6 -> lihatTransaksi();
+            case 7 -> tampilkanLogPerubahan();
             case 0 -> {} // Keluar
             default -> System.out.println("Pilihan tidak valid. Silakan pilih lagi.");
         }
     }
 
-    // Menampilkan daftar kategori yang ada
     public void tampilkanDaftarKategori() {
         System.out.println("=== Daftar Kategori ===");
-        for (Barang barang : stokGudang) {
-            System.out.println("- " + barang.getKategori());
-        }
-        System.out.println("=======================");
-    }
 
+        // Daftar kategori yang sudah ditampilkan sebelumnya
+        List<String> kategoriTampil = new ArrayList<>();
+
+        for (Barang barang : stokGudang) {
+            String kategori = barang.getKategori();
+
+            // Jika kategori belum ditampilkan sebelumnya, tambahkan ke daftar dan tampilkan
+            if (!kategoriTampil.contains(kategori)) {
+                System.out.println("- " + kategori);
+                kategoriTampil.add(kategori);
+            }
+        }
+
+        System.out.println("-----------------------");
+    }
 
     // Menu Kelola Kategori
     public void prosesMenuKategori() {
@@ -167,7 +177,7 @@ public class ManajemenStokGudang {
         if (kategoriExists) {
             System.out.println("Kategori '" + kategoriBaru + "' sudah ada.");
         } else {
-            stokGudang.add(new Barang(kategoriBaru, null, 0)); // Inisialisasi dengan null dan 0
+            stokGudang.add(new Barang(kategoriBaru, null)); // Inisialisasi dengan null dan 0
             System.out.println("Kategori '" + kategoriBaru + "' berhasil ditambahkan.");
             logPerubahan.add("+ Tambah Kategori: " + kategoriBaru);
         }
@@ -256,15 +266,8 @@ public class ManajemenStokGudang {
     // Fungsi untuk menambahkan stok barang
     public void tambahStok() {
         // Meminta input dari pengguna untuk nama kategori dan nama barang
-        System.out.print("Masukkan nama kategori: ");
-        String kategori = scanner.nextLine();
         System.out.print("Masukkan nama barang: ");
         String namaBarang = scanner.nextLine();
-
-        if (kategori.isEmpty()) {
-            System.out.println("Input tidak boleh kosong. Silakan coba lagi.");
-            return; // Menampilkan pesan dan menghentikan eksekusi lebih lanjut
-        }
 
         if (namaBarang.isEmpty()) {
             System.out.println("Input tidak boleh kosong. Silakan coba lagi.");
@@ -273,10 +276,17 @@ public class ManajemenStokGudang {
 
         // Mencari barang yang sesuai dengan nama kategori dan nama barang
         Barang barangToUpdate = null;
+        Transaksi transaksiToUpdate = null;
         for (Barang barang : stokGudang) {
-            if (barang.getKategori().equalsIgnoreCase(kategori) && barang.getNama() != null && barang.getNama().equalsIgnoreCase(namaBarang)) {
-                barangToUpdate = barang;
-                break;
+            for (Transaksi transaksi : transaksiGudang) {
+                if (transaksi.getNama().equalsIgnoreCase(namaBarang)
+                        && barang.getNama() != null
+                        && barang.getNama().equalsIgnoreCase(namaBarang)
+                        && barang.getNama().equalsIgnoreCase(transaksi.getNama())) {
+                    barangToUpdate = barang;
+                    transaksiToUpdate = transaksi;
+                    break;
+                }
             }
         }
 
@@ -301,7 +311,10 @@ public class ManajemenStokGudang {
             }
 
             // Menambahkan jumlah stok yang dimasukkan ke stok barang yang ada
-            barangToUpdate.setStok(barangToUpdate.getStok() + jumlahStok); // Update stok value
+//            barangToUpdate.setStok(barangToUpdate.getStok() + jumlahStok); // Update stok value
+            int sum = Integer.parseInt(transaksiToUpdate.getStok()) + jumlahStok;
+            transaksiToUpdate.setStok(String.valueOf(sum));
+            transaksiGudang.add(new Transaksi(barangToUpdate.getNama(), "+" + sum));
             System.out.println("Stok berhasil ditambahkan.");
             logPerubahan.add("+ Tambah Stok: " + namaBarang + " (" + jumlahStok + ")");
         } else {
@@ -312,15 +325,8 @@ public class ManajemenStokGudang {
     // Fungsi untuk mengurangi stok barang
     public void kurangiStok() {
         // Meminta input dari pengguna untuk nama kategori dan nama barang
-        System.out.print("Masukkan nama kategori: ");
-        String kategori = scanner.nextLine();
         System.out.print("Masukkan nama barang: ");
         String namaBarang = scanner.nextLine();
-
-        if (kategori.isEmpty()) {
-            System.out.println("Input tidak boleh kosong. Silakan coba lagi.");
-            return; // Menampilkan pesan dan menghentikan eksekusi lebih lanjut
-        }
 
         if (namaBarang.isEmpty()) {
             System.out.println("Input tidak boleh kosong. Silakan coba lagi.");
@@ -329,10 +335,17 @@ public class ManajemenStokGudang {
 
         // Mencari barang yang sesuai dengan nama kategori dan nama barang
         Barang barangToUpdate = null;
+        Transaksi transaksiToUpdate = null;
         for (Barang barang : stokGudang) {
-            if (barang.getKategori().equalsIgnoreCase(kategori) && barang.getNama() != null && barang.getNama().equalsIgnoreCase(namaBarang)) {
-                barangToUpdate = barang;
-                break;
+            for (Transaksi transaksi : transaksiGudang) {
+                if (transaksi.getNama().equalsIgnoreCase(namaBarang)
+                        && barang.getNama() != null
+                        && barang.getNama().equalsIgnoreCase(namaBarang)
+                        && barang.getNama().equalsIgnoreCase(transaksi.getNama())) {
+                    barangToUpdate = barang;
+                    transaksiToUpdate = transaksi;
+                    break;
+                }
             }
         }
 
@@ -346,7 +359,7 @@ public class ManajemenStokGudang {
                     scanner.nextLine(); // Membersihkan karakter newline
                     if (jumlahStok < 0) {
                         System.out.println("Jumlah stok harus lebih dari atau sama dengan 0.");
-                    } else if (jumlahStok > barangToUpdate.getStok()) {
+                    } else if (jumlahStok > Integer.parseInt(transaksiToUpdate.getStok())) {
                         System.out.println("Jumlah stok yang akan dikurangi melebihi stok yang ada.");
                     } else {
                         break;
@@ -358,7 +371,10 @@ public class ManajemenStokGudang {
             }
 
             // Mengurangi jumlah stok yang dimasukkan dari stok barang yang ada
-            barangToUpdate.setStok(barangToUpdate.getStok() - jumlahStok); // Update stok value
+//            barangToUpdate.setStok(barangToUpdate.getStok() - jumlahStok); // Update stok value
+            int minus = Integer.parseInt(transaksiToUpdate.getStok()) - jumlahStok;
+            transaksiToUpdate.setStok(String.valueOf(minus));
+            transaksiGudang.add(new Transaksi(barangToUpdate.getNama(), "-" + minus));
             System.out.println("Stok berhasil dikurangi.");
             logPerubahan.add("- Kurangi Stok: " + namaBarang + " (" + jumlahStok + ")");
         } else {
@@ -381,12 +397,18 @@ public class ManajemenStokGudang {
 
         // Mencari barang dengan nama yang sesuai dan menampilkan informasi jika ditemukan
         for (Barang barang : stokGudang) {
-            if (barang.getNama() != null && barang.getNama().equalsIgnoreCase(namaBarang)) {
-                System.out.println("Nama Kategori: " + barang.getKategori());
-                System.out.println("Nama Barang: " + barang.getNama());
-                System.out.println("Stok Barang: " + barang.getStok());
-                found = true;
-                break;
+            for (Transaksi transaksi : transaksiGudang) {
+                if (barang.getNama() != null
+                        && barang.getNama().equalsIgnoreCase(namaBarang)
+                        && transaksi.getNama().equalsIgnoreCase(namaBarang)) {
+                    System.out.println(" === Hasil Pencarian === ");
+                    System.out.println("Nama Kategori: " + barang.getKategori());
+                    System.out.println("Nama Barang: " + barang.getNama());
+                    System.out.println("Stok Barang: " + transaksi.getStok());
+                    System.out.println("-----------------------------");
+                    found = true;
+                    break;
+                }
             }
         }
 
@@ -418,11 +440,16 @@ public class ManajemenStokGudang {
 
         // Mencari barang dengan nama barang lama yang sesuai, kemudian mengganti namanya dengan yang baru
         for (Barang barang : stokGudang) {
-            if (barang.getNama() != null && barang.getNama().equalsIgnoreCase(namaBarangLama)) {
-                barang.setNama(namaBarangBaru);
-                updated = true;
-                break;
-            }
+           for (Transaksi transaksi : transaksiGudang) {
+               if (barang.getNama() != null
+                       && barang.getNama().equalsIgnoreCase(namaBarangLama)
+                       && transaksi.getNama().equalsIgnoreCase(namaBarangLama)) {
+                   barang.setNama(namaBarangBaru);
+                   transaksi.setNama(namaBarangBaru);
+                   updated = true;
+                   break;
+               }
+           }
         }
 
         // Jika nama barang berhasil diganti, tambahkan catatan perubahan
@@ -435,6 +462,8 @@ public class ManajemenStokGudang {
     }
 
     public void tambahNamaBarang() {
+        tampilkanDaftarKategori();
+
         // Meminta input dari pengguna untuk nama kategori
         System.out.print("Masukkan nama kategori: ");
         String kategori = scanner.nextLine();
@@ -488,7 +517,8 @@ public class ManajemenStokGudang {
             // Memeriksa apakah jumlah stok awal lebih dari 0
             if (jumlahStok > 0) {
                 // Menambahkan barang baru ke dalam stokGudang
-                stokGudang.add(new Barang(kategori, namaBarang, jumlahStok));
+                stokGudang.add(new Barang(kategori, namaBarang));
+                transaksiGudang.add(new Transaksi(namaBarang, String.valueOf(jumlahStok)));
                 System.out.println("Barang '" + namaBarang + "' dalam kategori '" + kategori + "' berhasil ditambahkan.");
                 // Menambahkan informasi perubahan ke logPerubahan
                 logPerubahan.add("+ Tambah Barang: " + namaBarang + " (" + jumlahStok + ")");
@@ -502,18 +532,9 @@ public class ManajemenStokGudang {
 
     // Fungsi untuk menghapus barang berdasarkan nama
     public void hapusBarang() {
-        // Meminta pengguna memasukkan nama kategori
-        System.out.print("Masukkan nama kategori: ");
-        String kategori = scanner.nextLine();
-
         // Meminta pengguna memasukkan nama barang yang akan dihapus
         System.out.print("Masukkan nama barang yang akan dihapus: ");
         String namaBarang = scanner.nextLine();
-
-        if (kategori.isEmpty()) {
-            System.out.println("Input tidak boleh kosong. Silakan coba lagi.");
-            return; // Menampilkan pesan dan menghentikan eksekusi lebih lanjut
-        }
 
         if (namaBarang.isEmpty()) {
             System.out.println("Input tidak boleh kosong. Silakan coba lagi.");
@@ -525,12 +546,12 @@ public class ManajemenStokGudang {
 
         // Iterasi melalui daftar stok gudang
         for (int i = 0; i < stokGudang.size(); i++) {
-            // Mendapatkan objek Model.Barang dari daftar stok gudang
+            // Mendapatkan objek Barang dari daftar stok gudang
             Barang barang = stokGudang.get(i);
 
-            // Memeriksa apakah objek Model.Barang sesuai dengan kriteria kategori dan nama yang dimasukkan pengguna
-            if (barang.getKategori().equalsIgnoreCase(kategori) && barang.getNama() != null && barang.getNama().equalsIgnoreCase(namaBarang)) {
-                // Menghapus objek Model.Barang dari daftar stok gudang
+            // Memeriksa apakah objek Barang sesuai dengan kriteria nama yang dimasukkan pengguna
+            if (barang.getNama() != null && barang.getNama().equalsIgnoreCase(namaBarang)) {
+                // Menghapus objek Barang dari daftar stok gudang
                 stokGudang.remove(i);
 
                 // Mengurangi nilai i untuk menyesuaikan indeks setelah penghapusan
@@ -548,11 +569,22 @@ public class ManajemenStokGudang {
         if (barangFound) {
             System.out.println("Barang '" + namaBarang + "' berhasil dihapus.");
         } else {
-            System.out.println("Barang '" + namaBarang + "' tidak ditemukan dalam kategori '" + kategori + "'.");
+            System.out.println("Barang '" + namaBarang + "' tidak ditemukan.");
         }
     }
 
-    // Mendefinisikan method untuk menampilkan stok barang di gudang
+    public void lihatTransaksi() {
+        System.out.println("=== Transaksi Barang Di Gudang ===");
+        System.out.println("Data" + "\t\t\t\t\t" + "Stok");
+        for (Transaksi transaksi : transaksiGudang) {
+            if (transaksi.getStok().matches("^[+-].*")) {
+                System.out.println( transaksi.getNama() + "\t\t\t\t\t" +  transaksi.getStok());
+            }
+        }
+        System.out.println("---------------------------------");
+    }
+
+    // Fungsi untuk menampilkan stok barang di gudang
     public void lihatStok() {
         // Menampilkan judul informasi stok barang
         System.out.println("=== Stok Barang di Gudang ===");
@@ -562,35 +594,38 @@ public class ManajemenStokGudang {
 
         // Iterasi melalui setiap barang dalam stokGudang
         for (Barang barang : stokGudang) {
-            // Memeriksa apakah nama barang tidak null dan stok barang lebih dari 0
-            if (barang.getNama() != null && barang.getStok() > 0) {
-                // Menampilkan informasi
+            if (barang.getNama() != null) {
                 System.out.println("Kategori: " + barang.getKategori());
                 System.out.println("  Nama Barang: " + barang.getNama());
-                System.out.println("  Stok Barang: " + barang.getStok());
-                System.out.println("-----------------------------");
+            }
+            for (Transaksi transaksi : transaksiGudang) {
+            // Memeriksa apakah nama barang tidak null dan stok barang lebih dari 0
+                // Menampilkan informasi
+                if (barang.getNama() != null
+                        && barang.getNama().equalsIgnoreCase(transaksi.getNama())
+                        && !transaksi.getStok().matches( "^[+-].*")) {
+                    System.out.println("  Stok Barang: " + transaksi.getStok());
+                }
                 // Menandai bahwa ada barang yang ditampilkan
                 hasItems = true;
             }
+            System.out.println();
         }
 
-        // Menampilkan pesan jika tidak ada barang yang ditampilkan
+         // Menampilkan pesan jika tidak ada barang yang ditampilkan
         if (!hasItems) {
             System.out.println("Tidak ada barang di gudang.");
         }
+        System.out.println("---------------------------");
     }
 
     // Fungsi untuk menampilkan log perubahan stok
     public void tampilkanLogPerubahan() {
         System.out.println("=== Log Perubahan Stok ===");
 
-        // Membuat objek SimpleDateFormat untuk mengatur format tanggal dan waktu
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-
         // Menampilkan setiap catatan perubahan dalam logPerubahan beserta timestamp
         for (String log : logPerubahan) {
-            String timestamp = dateFormat.format(new Date());
-            System.out.println(timestamp + " | " + log);
+            System.out.println(log);
         }
         System.out.println("=========================");
     }

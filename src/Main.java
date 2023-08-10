@@ -1,4 +1,4 @@
-import WarehouseManagement.ManajemenStokGudang;
+import Controller.ManajemenStokGudang;
 
 public class Main {
     public static void main(String[] args) {
