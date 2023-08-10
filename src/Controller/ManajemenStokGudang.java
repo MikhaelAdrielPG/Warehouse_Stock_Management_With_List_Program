@@ -311,15 +311,31 @@ public class ManajemenStokGudang {
             }
 
             // Menambahkan jumlah stok yang dimasukkan ke stok barang yang ada
-//            barangToUpdate.setStok(barangToUpdate.getStok() + jumlahStok); // Update stok value
-            int sum = Integer.parseInt(transaksiToUpdate.getStok()) + jumlahStok;
-            transaksiToUpdate.setStok(String.valueOf(sum));
-            transaksiGudang.add(new Transaksi(barangToUpdate.getNama(), "+" + sum));
+            // barangToUpdate.setStok(barangToUpdate.getStok() + jumlahStok); // Update stok value
+            // int sum = Integer.parseInt(transaksiToUpdate.getStok()) + jumlahStok;
+            // transaksiToUpdate.setStok(String.valueOf(sum));
+            transaksiGudang.add(new Transaksi(barangToUpdate.getNama(), "++" + jumlahStok));
+            transaksiGudang.add(new Transaksi(barangToUpdate.getNama(), String.valueOf(jumlahStok)));
             System.out.println("Stok berhasil ditambahkan.");
             logPerubahan.add("+ Tambah Stok: " + namaBarang + " (" + jumlahStok + ")");
         } else {
             System.out.println("Barang tidak ditemukan.");
         }
+    }
+
+    // Fungsi untuk Sum
+    public int sumStok(String barangName) {
+        int sum = 0;
+        for (Transaksi transaksi : transaksiGudang) {
+            if (transaksi.getNama().toLowerCase().contains(barangName.toLowerCase())) {
+                if (transaksi.getStok().matches("^\\d+")
+                        || transaksi.getStok().matches("^-?\\d+")) {
+                    int stok = Integer.parseInt(transaksi.getStok()) ;
+                    sum += stok;
+                }
+            }
+        }
+        return sum;
     }
 
     // Fungsi untuk mengurangi stok barang
@@ -371,10 +387,12 @@ public class ManajemenStokGudang {
             }
 
             // Mengurangi jumlah stok yang dimasukkan dari stok barang yang ada
-//            barangToUpdate.setStok(barangToUpdate.getStok() - jumlahStok); // Update stok value
-            int minus = Integer.parseInt(transaksiToUpdate.getStok()) - jumlahStok;
-            transaksiToUpdate.setStok(String.valueOf(minus));
-            transaksiGudang.add(new Transaksi(barangToUpdate.getNama(), "-" + minus));
+            // barangToUpdate.setStok(barangToUpdate.getStok() - jumlahStok); // Update stok value
+            //int minus = Integer.parseInt(transaksiToUpdate.getStok()) - jumlahStok;
+            // transaksiToUpdate.setStok(String.valueOf(minus));
+            String minus = "-" + jumlahStok;
+            transaksiGudang.add(new Transaksi(barangToUpdate.getNama(), "--" + jumlahStok));
+            transaksiGudang.add(new Transaksi(barangToUpdate.getNama(), minus));
             System.out.println("Stok berhasil dikurangi.");
             logPerubahan.add("- Kurangi Stok: " + namaBarang + " (" + jumlahStok + ")");
         } else {
@@ -579,8 +597,9 @@ public class ManajemenStokGudang {
         System.out.println("=== Transaksi Barang Di Gudang ===");
         System.out.println("Data" + "\t\t\t\t\t" + "Stok");
         for (Transaksi transaksi : transaksiGudang) {
-            if (transaksi.getStok().matches("^[+-].*")) {
-                System.out.println( transaksi.getNama() + "\t\t\t\t\t" +  transaksi.getStok());
+            if (transaksi.getStok().matches("^(\\+\\+|--).*")) {
+                String stok = transaksi.getStok().replaceAll("^\\+\\+", "+").replaceAll("--", "-");
+                System.out.println(transaksi.getNama() + "\t\t\t\t\t" +  stok);
             }
         }
         System.out.println("---------------------------------");
@@ -600,17 +619,14 @@ public class ManajemenStokGudang {
                 System.out.println("Kategori: " + barang.getKategori());
                 System.out.println("  Nama Barang: " + barang.getNama());
             }
-            for (Transaksi transaksi : transaksiGudang) {
             // Memeriksa apakah nama barang tidak null dan stok barang lebih dari 0
                 // Menampilkan informasi
-                if (barang.getNama() != null
-                        && barang.getNama().equalsIgnoreCase(transaksi.getNama())
-                        && !transaksi.getStok().matches( "^[+-].*")) {
-                    System.out.println("  Stok Barang: " + transaksi.getStok());
+                if ( barang.getNama() != null) {
+                    String stok = String.valueOf(sumStok(barang.getNama()));
+                    System.out.println("  Stok Barang: " + stok);
                 }
                 // Menandai bahwa ada barang yang ditampilkan
                 hasItems = true;
-            }
             System.out.println();
         }
 
