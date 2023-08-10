@@ -528,6 +528,8 @@ public class ManajemenStokGudang {
         } else {
             System.out.println("Nama barang tidak boleh kosong.");
         }
+
+        lihatStok();
     }
 
     // Fungsi untuk menghapus barang berdasarkan nama
