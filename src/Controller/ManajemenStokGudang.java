@@ -253,34 +253,46 @@ public class ManajemenStokGudang {
             return; // Menghentikan eksekusi lebih lanjut jika input kosong
         }
 
-        // Variabel untuk menandai apakah penggantian berhasil dilakukan
-        boolean updated = false;
-
-        // Mencari barang dengan nama kategori yang sesuai dan mengganti namanya dengan kategoriBaru
+        // Periksa apakah nama kategori baru sudah ada dalam stokGudang
+        boolean kategoriExists = false;
         for (Barang barang : stokGudang) {
-            if (barang.getKategori().equalsIgnoreCase(kategoriLama)) {
-                // Mengganti nama kategori barang
-                barang.setKategori(kategoriBaru);
-                updated = true;
+            if (barang.getKategori().equalsIgnoreCase(kategoriBaru)) {
+                kategoriExists = true;
+                break;
             }
         }
 
-        // Mencari transaksi dengan nama kategori yang sesuai dan mengganti namanya dengan kategoriBaru
-        for (Transaksi transaksi : transaksiGudang) {
-            if (transaksi.getNama().equalsIgnoreCase(kategoriLama)) {
-                // Mengganti nama transaksi kategori
-                transaksi.setNama(kategoriBaru);
-                updated = true;
-            }
-        }
-
-        // Menampilkan pesan berdasarkan apakah penggantian berhasil atau tidak
-        if (updated) {
-            System.out.println("Nama kategori berhasil diganti.");
-            // Menambahkan catatan perubahan ke logPerubahan
-            logPerubahan.add("* Ganti Nama Kategori: " + kategoriLama + " -> " + kategoriBaru);
+        // Jika kategori baru sudah ada, tampilkan pesan, jika tidak,
+        // ganti nama kategori lama dengan kategori baru
+        if (kategoriExists) {
+            System.out.println("Kategori '" + kategoriBaru + "' sudah ada.");
         } else {
-            System.out.println("Kategori '" + kategoriLama + "' tidak ditemukan.");
+            // Mencari dan mengganti nama kategori
+            boolean updated = false;
+            for (Barang barang : stokGudang) {
+                if (barang.getKategori().equalsIgnoreCase(kategoriLama)) {
+                    // Mengganti nama kategori barang
+                    barang.setKategori(kategoriBaru);
+                    updated = true;
+                }
+            }
+
+            for (Transaksi transaksi : transaksiGudang) {
+                if (transaksi.getNama().equalsIgnoreCase(kategoriLama)) {
+                    // Mengganti nama transaksi kategori
+                    transaksi.setNama(kategoriBaru);
+                    updated = true;
+                }
+            }
+
+            // Menampilkan pesan berdasarkan apakah penggantian berhasil atau tidak
+            if (updated) {
+                System.out.println("Nama kategori berhasil diganti.");
+                // Menambahkan catatan perubahan ke logPerubahan
+                logPerubahan.add("* Ganti Nama Kategori: " + kategoriLama + " -> " + kategoriBaru);
+            } else {
+                System.out.println("Kategori '" + kategoriLama + "' tidak ditemukan.");
+            }
         }
     }
 
@@ -632,18 +644,23 @@ public class ManajemenStokGudang {
         // Menampilkan header kolom "Data" dan "Stok"
         System.out.println("Data" + "\t\t\t\t\t" + "Stok");
 
-        // Iterasi melalui daftar transaksiGudang
-        for (Transaksi transaksi : transaksiGudang) {
-            // Memeriksa apakah nilai stok cocok dengan pola yang menunjukkan transaksi penambahan atau pengurangan
-            if (transaksi.getStok().matches("^[+-].*")) {
-                /*
-                * Jadi, secara keseluruhan,
-                * kode regex "^[+-].*" ini akan mencocokkan string yang dimulai dengan tanda plus atau tanda minus,
-                * dan diikuti oleh nol atau lebih karakter apa pun. Dengan kata lain,
-                * ini akan mencocokkan string yang memiliki awalan seperti +abc, -xyz, +123, -abc123, dan sebagainya.
-                * */
-                // Menampilkan nama dan nilai stok transaksi
-                System.out.println( transaksi.getNama() + "\t\t\t\t\t" +  transaksi.getStok());
+        // Memeriksa apakah daftar transaksiGudang kosong
+        if (transaksiGudang.isEmpty()) {
+            System.out.println("Belum ada transaksi.");
+        } else {
+            // Iterasi melalui daftar transaksiGudang
+            for (Transaksi transaksi : transaksiGudang) {
+                // Memeriksa apakah nilai stok cocok dengan pola yang menunjukkan transaksi penambahan atau pengurangan
+                if (transaksi.getStok().matches("^[+-].*")) {
+                    /*
+                     * Jadi, secara keseluruhan,
+                     * kode regex "^[+-].*" ini akan mencocokkan string yang dimulai dengan tanda plus atau tanda minus,
+                     * dan diikuti oleh nol atau lebih karakter apa pun. Dengan kata lain,
+                     * ini akan mencocokkan string yang memiliki awalan seperti +abc, -xyz, +123, -abc123, dan sebagainya.
+                     * */
+                    // Menampilkan nama dan nilai stok transaksi
+                    System.out.println( transaksi.getNama() + "\t\t\t\t\t" +  transaksi.getStok());
+                }
             }
         }
 
@@ -707,9 +724,14 @@ public class ManajemenStokGudang {
         // Menampilkan judul untuk log perubahan stok
         System.out.println("=== Log Perubahan Stok ===");
 
-        // Iterasi melalui setiap catatan perubahan dalam logPerubahan dan menampilkannya
-        for (String log : logPerubahan) {
-            System.out.println(log);
+        // Memeriksa apakah logPerubahan kosong
+        if (logPerubahan.isEmpty()) {
+            System.out.println("Tidak ada catatan perubahan.");
+        } else {
+            // Iterasi melalui setiap catatan perubahan dalam logPerubahan dan menampilkannya
+            for (String log : logPerubahan) {
+                System.out.println(log);
+            }
         }
 
         // Menampilkan garis pemisah setelah semua catatan perubahan ditampilkan
