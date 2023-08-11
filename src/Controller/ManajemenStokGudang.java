@@ -158,9 +158,10 @@ public class ManajemenStokGudang {
         System.out.print("Masukkan nama kategori baru: ");
         String kategoriBaru = scanner.nextLine();
 
+        // Periksa apakah input kategori kosong
         if (kategoriBaru.isEmpty()) {
             System.out.println("Input tidak boleh kosong. Silakan coba lagi.");
-            return; // Menampilkan pesan dan menghentikan eksekusi lebih lanjut
+            return; // Menghentikan eksekusi lebih lanjut jika input kosong
         }
 
         // Periksa apakah kategori sudah ada dalam stokGudang
@@ -177,24 +178,29 @@ public class ManajemenStokGudang {
         if (kategoriExists) {
             System.out.println("Kategori '" + kategoriBaru + "' sudah ada.");
         } else {
+            // Tambahkan kategori baru ke stokGudang dan catat perubahan
             stokGudang.add(new Barang(kategoriBaru, null)); // Inisialisasi dengan null dan 0
             System.out.println("Kategori '" + kategoriBaru + "' berhasil ditambahkan.");
             logPerubahan.add("+ Tambah Kategori: " + kategoriBaru);
         }
 
+        // Tampilkan daftar kategori setelah operasi
         tampilkanDaftarKategori();
     }
 
     // Fungsi untuk menghapus kategori
     public void hapusKategori() {
+        // Menampilkan daftar kategori sebelum penghapusan
         tampilkanDaftarKategori();
+
         // Meminta pengguna memasukkan nama kategori yang akan dihapus
         System.out.print("Masukkan nama kategori yang akan dihapus: ");
         String kategoriHapus = scanner.nextLine();
 
+        // Periksa apakah input kategori kosong
         if (kategoriHapus.isEmpty()) {
             System.out.println("Input tidak boleh kosong. Silakan coba lagi.");
-            return; // Menampilkan pesan dan menghentikan eksekusi lebih lanjut
+            return; // Menghentikan eksekusi lebih lanjut jika input kosong
         }
 
         // Menginisialisasi variabel untuk menandai apakah kategori ditemukan
@@ -227,36 +233,43 @@ public class ManajemenStokGudang {
 
     // Fungsi untuk mengganti nama kategori
     public void gantiNamaKategori() {
+        // Menampilkan daftar kategori sebelum penggantian
         tampilkanDaftarKategori();
+
         // Meminta input dari pengguna untuk nama kategori yang akan diganti dan nama kategori baru
         System.out.print("Masukkan nama kategori yang akan diganti: ");
         String kategoriLama = scanner.nextLine();
         System.out.print("Masukkan nama kategori baru: ");
         String kategoriBaru = scanner.nextLine();
 
+        // Periksa apakah input nama kategori lama kosong
         if (kategoriLama.isEmpty()) {
             System.out.println("Input tidak boleh kosong. Silakan coba lagi.");
-            return; // Menampilkan pesan dan menghentikan eksekusi lebih lanjut
+            return; // Menghentikan eksekusi lebih lanjut jika input kosong
         }
 
+        // Periksa apakah input nama kategori baru kosong
         if (kategoriBaru.isEmpty()) {
             System.out.println("Input tidak boleh kosong. Silakan coba lagi.");
-            return; // Menampilkan pesan dan menghentikan eksekusi lebih lanjut
+            return; // Menghentikan eksekusi lebih lanjut jika input kosong
         }
 
+        // Variabel untuk menandai apakah penggantian berhasil dilakukan
         boolean updated = false;
 
         // Mencari barang dengan nama kategori yang sesuai dan mengganti namanya dengan kategoriBaru
         for (Barang barang : stokGudang) {
             if (barang.getKategori().equalsIgnoreCase(kategoriLama)) {
+                // Mengganti nama kategori barang
                 barang.setKategori(kategoriBaru);
                 updated = true;
             }
         }
 
-        // Jika kategori berhasil diubah, tambahkan catatan perubahan
+        // Menampilkan pesan berdasarkan apakah penggantian berhasil atau tidak
         if (updated) {
             System.out.println("Nama kategori berhasil diganti.");
+            // Menambahkan catatan perubahan ke logPerubahan
             logPerubahan.add("* Ganti Nama Kategori: " + kategoriLama + " -> " + kategoriBaru);
         } else {
             System.out.println("Kategori '" + kategoriLama + "' tidak ditemukan.");
@@ -265,20 +278,22 @@ public class ManajemenStokGudang {
 
     // Fungsi untuk menambahkan stok barang
     public void tambahStok() {
-        // Meminta input dari pengguna untuk nama kategori dan nama barang
+        // Meminta input dari pengguna untuk nama barang
         System.out.print("Masukkan nama barang: ");
         String namaBarang = scanner.nextLine();
 
+        // Periksa apakah input nama barang kosong
         if (namaBarang.isEmpty()) {
             System.out.println("Input tidak boleh kosong. Silakan coba lagi.");
-            return; // Menampilkan pesan dan menghentikan eksekusi lebih lanjut
+            return; // Menghentikan eksekusi lebih lanjut jika input kosong
         }
 
-        // Mencari barang yang sesuai dengan nama kategori dan nama barang
+        // Mencari barang yang sesuai dengan nama barang
         Barang barangToUpdate = null;
         Transaksi transaksiToUpdate = null;
         for (Barang barang : stokGudang) {
             for (Transaksi transaksi : transaksiGudang) {
+                // Memeriksa apakah terdapat transaksi dan barang dengan nama yang sesuai
                 if (transaksi.getNama().equalsIgnoreCase(namaBarang)
                         && barang.getNama() != null
                         && barang.getNama().equalsIgnoreCase(namaBarang)
@@ -299,6 +314,7 @@ public class ManajemenStokGudang {
                     jumlahStok = scanner.nextInt();
                     scanner.nextLine(); // Membersihkan karakter newline
 
+                    // Memeriksa apakah jumlah stok valid
                     if (jumlahStok < 0) {
                         System.out.println("Jumlah stok harus lebih dari atau sama dengan 0.");
                     } else {
@@ -310,11 +326,14 @@ public class ManajemenStokGudang {
                 }
             }
 
-            // Menambahkan jumlah stok yang dimasukkan ke stok barang yang ada
-//            barangToUpdate.setStok(barangToUpdate.getStok() + jumlahStok); // Update stok value
+            // Menambahkan jumlah stok yang dimasukkan ke transaksi stok yang ada
             int sum = Integer.parseInt(transaksiToUpdate.getStok()) + jumlahStok;
             transaksiToUpdate.setStok(String.valueOf(sum));
+
+            // Menambahkan transaksi baru ke transaksiGudang
             transaksiGudang.add(new Transaksi(barangToUpdate.getNama(), "+" + sum));
+
+            // Menampilkan pesan berhasil dan mencatat perubahan ke logPerubahan
             System.out.println("Stok berhasil ditambahkan.");
             logPerubahan.add("+ Tambah Stok: " + namaBarang + " (" + jumlahStok + ")");
         } else {
@@ -324,20 +343,22 @@ public class ManajemenStokGudang {
 
     // Fungsi untuk mengurangi stok barang
     public void kurangiStok() {
-        // Meminta input dari pengguna untuk nama kategori dan nama barang
+        // Meminta input dari pengguna untuk nama barang
         System.out.print("Masukkan nama barang: ");
         String namaBarang = scanner.nextLine();
 
+        // Periksa apakah input nama barang kosong
         if (namaBarang.isEmpty()) {
             System.out.println("Input tidak boleh kosong. Silakan coba lagi.");
-            return; // Menampilkan pesan dan menghentikan eksekusi lebih lanjut
+            return; // Menghentikan eksekusi lebih lanjut jika input kosong
         }
 
-        // Mencari barang yang sesuai dengan nama kategori dan nama barang
+        // Mencari barang yang sesuai dengan nama barang
         Barang barangToUpdate = null;
         Transaksi transaksiToUpdate = null;
         for (Barang barang : stokGudang) {
             for (Transaksi transaksi : transaksiGudang) {
+                // Memeriksa apakah terdapat transaksi dan barang dengan nama yang sesuai
                 if (transaksi.getNama().equalsIgnoreCase(namaBarang)
                         && barang.getNama() != null
                         && barang.getNama().equalsIgnoreCase(namaBarang)
@@ -357,6 +378,8 @@ public class ManajemenStokGudang {
                     System.out.print("Masukkan jumlah stok yang akan dikurangi: ");
                     jumlahStok = scanner.nextInt();
                     scanner.nextLine(); // Membersihkan karakter newline
+
+                    // Memeriksa apakah jumlah stok valid dan tidak melebihi stok yang ada
                     if (jumlahStok < 0) {
                         System.out.println("Jumlah stok harus lebih dari atau sama dengan 0.");
                     } else if (jumlahStok > Integer.parseInt(transaksiToUpdate.getStok())) {
@@ -370,11 +393,14 @@ public class ManajemenStokGudang {
                 }
             }
 
-            // Mengurangi jumlah stok yang dimasukkan dari stok barang yang ada
-//            barangToUpdate.setStok(barangToUpdate.getStok() - jumlahStok); // Update stok value
+            // Mengurangi jumlah stok yang dimasukkan dari transaksi stok yang ada
             int minus = Integer.parseInt(transaksiToUpdate.getStok()) - jumlahStok;
             transaksiToUpdate.setStok(String.valueOf(minus));
-            transaksiGudang.add(new Transaksi(barangToUpdate.getNama(), "-" + minus));
+
+            // Menambahkan transaksi baru ke transaksiGudang dengan tanda minus
+            transaksiGudang.add(new Transaksi(barangToUpdate.getNama(), "-" + jumlahStok));
+
+            // Menampilkan pesan berhasil dan mencatat perubahan ke logPerubahan
             System.out.println("Stok berhasil dikurangi.");
             logPerubahan.add("- Kurangi Stok: " + namaBarang + " (" + jumlahStok + ")");
         } else {
@@ -388,16 +414,19 @@ public class ManajemenStokGudang {
         System.out.print("Masukkan nama barang: ");
         String namaBarang = scanner.nextLine();
 
+        // Periksa apakah input nama barang kosong
         if (namaBarang.isEmpty()) {
             System.out.println("Input tidak boleh kosong. Silakan coba lagi.");
-            return; // Menampilkan pesan dan menghentikan eksekusi lebih lanjut
+            return; // Menghentikan eksekusi lebih lanjut jika input kosong
         }
 
+        // Variabel untuk menandai apakah barang ditemukan
         boolean found = false;
 
         // Mencari barang dengan nama yang sesuai dan menampilkan informasi jika ditemukan
         for (Barang barang : stokGudang) {
             for (Transaksi transaksi : transaksiGudang) {
+                // Memeriksa apakah terdapat barang dan transaksi dengan nama yang sesuai
                 if (barang.getNama() != null
                         && barang.getNama().equalsIgnoreCase(namaBarang)
                         && transaksi.getNama().equalsIgnoreCase(namaBarang)) {
@@ -407,7 +436,7 @@ public class ManajemenStokGudang {
                     System.out.println("Stok Barang: " + transaksi.getStok());
                     System.out.println("-----------------------------");
                     found = true;
-                    break;
+                    break; // Keluar dari loop jika barang ditemukan
                 }
             }
         }
@@ -426,51 +455,61 @@ public class ManajemenStokGudang {
         System.out.print("Masukkan nama barang baru: ");
         String namaBarangBaru = scanner.nextLine();
 
+        // Periksa apakah input nama barang lama kosong
         if (namaBarangLama.isEmpty()) {
             System.out.println("Input tidak boleh kosong. Silakan coba lagi.");
-            return; // Menampilkan pesan dan menghentikan eksekusi lebih lanjut
+            return; // Menghentikan eksekusi lebih lanjut jika input kosong
         }
 
+        // Periksa apakah input nama barang baru kosong
         if (namaBarangBaru.isEmpty()) {
             System.out.println("Input tidak boleh kosong. Silakan coba lagi.");
-            return; // Menampilkan pesan dan menghentikan eksekusi lebih lanjut
+            return; // Menghentikan eksekusi lebih lanjut jika input kosong
         }
 
+        // Variabel untuk menandai apakah penggantian berhasil dilakukan
         boolean updated = false;
 
-        // Mencari barang dengan nama barang lama yang sesuai, kemudian mengganti namanya dengan yang baru
+        // Mencari barang dengan nama barang lama yang sesuai,
+        // kemudian mengganti namanya dengan yang baru
         for (Barang barang : stokGudang) {
-           for (Transaksi transaksi : transaksiGudang) {
-               if (barang.getNama() != null
-                       && barang.getNama().equalsIgnoreCase(namaBarangLama)
-                       && transaksi.getNama().equalsIgnoreCase(namaBarangLama)) {
-                   barang.setNama(namaBarangBaru);
-                   transaksi.setNama(namaBarangBaru);
-                   updated = true;
-                   break;
-               }
-           }
+            for (Transaksi transaksi : transaksiGudang) {
+                // Memeriksa apakah terdapat barang dan transaksi dengan nama yang sesuai
+                if (barang.getNama() != null
+                        && barang.getNama().equalsIgnoreCase(namaBarangLama)
+                        && transaksi.getNama().equalsIgnoreCase(namaBarangLama)) {
+                    // Mengganti nama barang dan transaksi dengan yang baru
+                    barang.setNama(namaBarangBaru);
+                    transaksi.setNama(namaBarangBaru);
+                    updated = true;
+                    break; // Keluar dari loop jika nama barang berhasil diganti
+                }
+            }
         }
 
-        // Jika nama barang berhasil diganti, tambahkan catatan perubahan
+        // Menampilkan pesan berdasarkan apakah penggantian berhasil atau tidak
         if (updated) {
             System.out.println("Nama barang berhasil diganti.");
+            // Menambahkan catatan perubahan ke logPerubahan
             logPerubahan.add("* Ganti Nama Barang: " + namaBarangLama + " -> " + namaBarangBaru);
         } else {
             System.out.println("Barang tidak ditemukan.");
         }
     }
 
+    // Fungsi untuk menambahkan nama barang dalam kategori tertentu
     public void tambahNamaBarang() {
+        // Menampilkan daftar kategori sebelum menambahkan nama barang
         tampilkanDaftarKategori();
 
         // Meminta input dari pengguna untuk nama kategori
         System.out.print("Masukkan nama kategori: ");
         String kategori = scanner.nextLine();
 
+        // Periksa apakah input nama kategori kosong
         if (kategori.isEmpty()) {
             System.out.println("Input tidak boleh kosong. Silakan coba lagi.");
-            return; // Menampilkan pesan dan menghentikan eksekusi lebih lanjut
+            return; // Menghentikan eksekusi lebih lanjut jika input kosong
         }
 
         // Periksa apakah kategori sudah ada dalam stokGudang
@@ -529,6 +568,7 @@ public class ManajemenStokGudang {
             System.out.println("Nama barang tidak boleh kosong.");
         }
 
+        // Menampilkan stok setelah penambahan barang
         lihatStok();
     }
 
@@ -538,9 +578,10 @@ public class ManajemenStokGudang {
         System.out.print("Masukkan nama barang yang akan dihapus: ");
         String namaBarang = scanner.nextLine();
 
+        // Periksa apakah input nama barang kosong
         if (namaBarang.isEmpty()) {
             System.out.println("Input tidak boleh kosong. Silakan coba lagi.");
-            return; // Menampilkan pesan dan menghentikan eksekusi lebih lanjut
+            return; // Menghentikan eksekusi lebih lanjut jika input kosong
         }
 
         // Inisialisasi variabel untuk melacak apakah barang ditemukan atau tidak
@@ -575,14 +616,24 @@ public class ManajemenStokGudang {
         }
     }
 
+    // Fungsi untuk melihat transaksi barang di gudang
     public void lihatTransaksi() {
+        // Menampilkan judul untuk transaksi barang di gudang
         System.out.println("=== Transaksi Barang Di Gudang ===");
+
+        // Menampilkan header kolom "Data" dan "Stok"
         System.out.println("Data" + "\t\t\t\t\t" + "Stok");
+
+        // Iterasi melalui daftar transaksiGudang
         for (Transaksi transaksi : transaksiGudang) {
+            // Memeriksa apakah nilai stok cocok dengan pola yang menunjukkan transaksi penambahan atau pengurangan
             if (transaksi.getStok().matches("^[+-].*")) {
+                // Menampilkan nama dan nilai stok transaksi
                 System.out.println( transaksi.getNama() + "\t\t\t\t\t" +  transaksi.getStok());
             }
         }
+
+        // Menampilkan garis pemisah
         System.out.println("---------------------------------");
     }
 
@@ -596,39 +647,51 @@ public class ManajemenStokGudang {
 
         // Iterasi melalui setiap barang dalam stokGudang
         for (Barang barang : stokGudang) {
+            // Memeriksa apakah nama barang tidak null
             if (barang.getNama() != null) {
+                // Menampilkan kategori dan nama barang
                 System.out.println("Kategori: " + barang.getKategori());
                 System.out.println("  Nama Barang: " + barang.getNama());
             }
+
+            // Iterasi melalui setiap transaksi dalam transaksiGudang
             for (Transaksi transaksi : transaksiGudang) {
-            // Memeriksa apakah nama barang tidak null dan stok barang lebih dari 0
-                // Menampilkan informasi
+                // Memeriksa apakah nama barang tidak null dan stok barang lebih dari 0
                 if (barang.getNama() != null
                         && barang.getNama().equalsIgnoreCase(transaksi.getNama())
-                        && !transaksi.getStok().matches( "^[+-].*")) {
+                        && !transaksi.getStok().matches("^[+-].*")) {
+                    // Menampilkan informasi stok barang
                     System.out.println("  Stok Barang: " + transaksi.getStok());
                 }
+
                 // Menandai bahwa ada barang yang ditampilkan
                 hasItems = true;
             }
+
+            // Menampilkan baris kosong antara setiap barang
             System.out.println();
         }
 
-         // Menampilkan pesan jika tidak ada barang yang ditampilkan
+        // Menampilkan pesan jika tidak ada barang yang ditampilkan
         if (!hasItems) {
             System.out.println("Tidak ada barang di gudang.");
         }
+
+        // Menampilkan garis pemisah
         System.out.println("---------------------------");
     }
 
     // Fungsi untuk menampilkan log perubahan stok
     public void tampilkanLogPerubahan() {
+        // Menampilkan judul untuk log perubahan stok
         System.out.println("=== Log Perubahan Stok ===");
 
-        // Menampilkan setiap catatan perubahan dalam logPerubahan beserta timestamp
+        // Iterasi melalui setiap catatan perubahan dalam logPerubahan dan menampilkannya
         for (String log : logPerubahan) {
             System.out.println(log);
         }
+
+        // Menampilkan garis pemisah setelah semua catatan perubahan ditampilkan
         System.out.println("=========================");
     }
 }
