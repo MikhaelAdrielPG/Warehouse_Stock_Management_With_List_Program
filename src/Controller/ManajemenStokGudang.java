@@ -8,12 +8,11 @@ import java.util.*;
 // Definisi kelas utama Controller.ManajemenStokGudang
 public class ManajemenStokGudang {
     // List untuk menyimpan stok barang dan log perubahan
-    static List<Barang> stokGudang = new ArrayList<>();
-    static List<Transaksi> transaksiGudang = new ArrayList<>();
-    static List<String> logPerubahan = new ArrayList<>();
-    static Scanner scanner = new Scanner(System.in);
-
-    static Menu menu = new Menu();
+    public List<Barang> stokGudang = new ArrayList<>();
+    public List<Transaksi> transaksiGudang = new ArrayList<>();
+    public List<String> logPerubahan = new ArrayList<>();
+    public Scanner scanner = new Scanner(System.in);
+    public Menu menu = new Menu();
 
     // Fungsi utama program
     public void mainProgram() {
@@ -628,6 +627,12 @@ public class ManajemenStokGudang {
         for (Transaksi transaksi : transaksiGudang) {
             // Memeriksa apakah nilai stok cocok dengan pola yang menunjukkan transaksi penambahan atau pengurangan
             if (transaksi.getStok().matches("^[+-].*")) {
+                /*
+                * Jadi, secara keseluruhan,
+                * kode regex "^[+-].*" ini akan mencocokkan string yang dimulai dengan tanda plus atau tanda minus,
+                * dan diikuti oleh nol atau lebih karakter apa pun. Dengan kata lain,
+                * ini akan mencocokkan string yang memiliki awalan seperti +abc, -xyz, +123, -abc123, dan sebagainya.
+                * */
                 // Menampilkan nama dan nilai stok transaksi
                 System.out.println( transaksi.getNama() + "\t\t\t\t\t" +  transaksi.getStok());
             }
@@ -660,6 +665,13 @@ public class ManajemenStokGudang {
                 if (barang.getNama() != null
                         && barang.getNama().equalsIgnoreCase(transaksi.getNama())
                         && !transaksi.getStok().matches("^[+-].*")) {
+                    /*
+                    * Jadi, secara keseluruhan,
+                    * bagian ini dari kode akan menghasilkan true
+                    * jika string transaksi.getStok() tidak sesuai dengan pola regex "^[+-].*",
+                    * yaitu jika string tersebut tidak dimulai dengan tanda plus atau tanda minus,
+                    * atau mengandung nol karakter setelah tanda plus atau tanda minus.
+                    * */
                     // Menampilkan informasi stok barang
                     System.out.println("  Stok Barang: " + transaksi.getStok());
                 }
