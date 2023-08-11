@@ -265,6 +265,15 @@ public class ManajemenStokGudang {
             }
         }
 
+        // Mencari transaksi dengan nama kategori yang sesuai dan mengganti namanya dengan kategoriBaru
+        for (Transaksi transaksi : transaksiGudang) {
+            if (transaksi.getNama().equalsIgnoreCase(kategoriLama)) {
+                // Mengganti nama transaksi kategori
+                transaksi.setNama(kategoriBaru);
+                updated = true;
+            }
+        }
+
         // Menampilkan pesan berdasarkan apakah penggantian berhasil atau tidak
         if (updated) {
             System.out.println("Nama kategori berhasil diganti.");
@@ -314,7 +323,7 @@ public class ManajemenStokGudang {
                     scanner.nextLine(); // Membersihkan karakter newline
 
                     // Memeriksa apakah jumlah stok valid
-                    if (jumlahStok < 0) {
+                    if (jumlahStok <= 0) {
                         System.out.println("Jumlah stok harus lebih dari atau sama dengan 0.");
                     } else {
                         break;
@@ -379,7 +388,7 @@ public class ManajemenStokGudang {
                     scanner.nextLine(); // Membersihkan karakter newline
 
                     // Memeriksa apakah jumlah stok valid dan tidak melebihi stok yang ada
-                    if (jumlahStok < 0) {
+                    if (jumlahStok <= 0) {
                         System.out.println("Jumlah stok harus lebih dari atau sama dengan 0.");
                     } else if (jumlahStok > Integer.parseInt(transaksiToUpdate.getStok())) {
                         System.out.println("Jumlah stok yang akan dikurangi melebihi stok yang ada.");
