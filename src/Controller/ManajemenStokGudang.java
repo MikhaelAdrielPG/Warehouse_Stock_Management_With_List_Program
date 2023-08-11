@@ -349,7 +349,9 @@ public class ManajemenStokGudang {
 
     // Fungsi untuk menambahkan stok barang
     public void tambahStok() {
+        // Menampilkan daftar barang
         lihatBarang();
+
         // Meminta input dari pengguna untuk nama barang
         System.out.print("Masukkan nama barang: ");
         String namaBarang = scanner.nextLine();
@@ -415,7 +417,9 @@ public class ManajemenStokGudang {
 
     // Fungsi untuk mengurangi stok barang
     public void kurangiStok() {
+        // Menampilkan daftar barang
         lihatBarang();
+
         // Meminta input dari pengguna untuk nama barang
         System.out.print("Masukkan nama barang: ");
         String namaBarang = scanner.nextLine();
@@ -522,6 +526,7 @@ public class ManajemenStokGudang {
 
     // Fungsi untuk mengganti nama barang
     public void gantiNamaBarang() {
+        // Menampilkan daftar barang
         lihatBarang();
 
         // Meminta input dari pengguna untuk nama barang lama dan nama barang baru
@@ -649,6 +654,7 @@ public class ManajemenStokGudang {
 
     // Fungsi untuk menghapus barang berdasarkan nama
     public void hapusBarang() {
+        // Menampilkan daftar barang
         lihatBarang();
 
         // Meminta pengguna memasukkan nama barang yang akan dihapus
