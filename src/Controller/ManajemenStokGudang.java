@@ -397,7 +397,7 @@ public class ManajemenStokGudang {
             transaksiToUpdate.setStok(String.valueOf(minus));
 
             // Menambahkan transaksi baru ke transaksiGudang dengan tanda minus
-            transaksiGudang.add(new Transaksi(barangToUpdate.getNama(), "-" + jumlahStok));
+            transaksiGudang.add(new Transaksi(barangToUpdate.getNama(), "-" + minus));
 
             // Menampilkan pesan berhasil dan mencatat perubahan ke logPerubahan
             System.out.println("Stok berhasil dikurangi.");
