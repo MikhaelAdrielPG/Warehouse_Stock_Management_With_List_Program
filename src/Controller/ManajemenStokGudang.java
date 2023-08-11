@@ -68,6 +68,57 @@ public class ManajemenStokGudang {
         System.out.println("-----------------------");
     }
 
+    // Fungsi untuk melihat daftar barang
+    public void lihatBarang() {
+        // Menampilkan judul daftar barang
+        System.out.println("=== Daftar Barang di Gudang ===");
+
+        // Menginisialisasi variabel untuk menandai apakah ada barang yang ditampilkan
+        boolean hasItems = false;
+
+        // Iterasi melalui setiap barang dalam stokGudang
+        for (Barang barang : stokGudang) {
+            // Memeriksa apakah nama barang tidak null
+            if (barang.getNama() != null) {
+                // Menampilkan kategori dan nama barang
+                System.out.println("Kategori: " + barang.getKategori());
+                System.out.println("  Nama Barang: " + barang.getNama());
+
+                // Iterasi melalui setiap transaksi dalam transaksiGudang
+                for (Transaksi transaksi : transaksiGudang) {
+                    // Memeriksa apakah nama barang tidak null dan stok barang lebih dari 0
+                    if (barang.getNama().equalsIgnoreCase(transaksi.getNama())
+                            && !transaksi.getStok().matches("^[+-].*")) {
+                        /*
+                         * Jadi, secara keseluruhan,
+                         * bagian ini dari kode akan menghasilkan true
+                         * jika string transaksi.getStok() tidak sesuai dengan pola regex "^[+-].*",
+                         * yaitu jika string tersebut tidak dimulai dengan tanda plus atau tanda minus,
+                         * atau mengandung nol karakter setelah tanda plus atau tanda minus.
+                         * */
+                        // Menampilkan informasi stok barang
+                        System.out.println("  Stok Barang: " + transaksi.getStok());
+                    }
+                }
+
+                // Menampilkan baris kosong antara setiap barang
+                System.out.println();
+
+                // Menandai bahwa ada barang yang ditampilkan
+                hasItems = true;
+            }
+        }
+
+        // Menampilkan pesan jika tidak ada barang yang ditampilkan
+        if (!hasItems) {
+            System.out.println("Tidak ada barang di gudang.");
+        }
+
+        // Menampilkan garis pemisah
+        System.out.println("-----------------------------");
+    }
+
+
     // Menu Kelola Kategori
     public void prosesMenuKategori() {
         int pilihan = -1;
@@ -298,6 +349,7 @@ public class ManajemenStokGudang {
 
     // Fungsi untuk menambahkan stok barang
     public void tambahStok() {
+        lihatBarang();
         // Meminta input dari pengguna untuk nama barang
         System.out.print("Masukkan nama barang: ");
         String namaBarang = scanner.nextLine();
@@ -363,6 +415,7 @@ public class ManajemenStokGudang {
 
     // Fungsi untuk mengurangi stok barang
     public void kurangiStok() {
+        lihatBarang();
         // Meminta input dari pengguna untuk nama barang
         System.out.print("Masukkan nama barang: ");
         String namaBarang = scanner.nextLine();
@@ -469,6 +522,8 @@ public class ManajemenStokGudang {
 
     // Fungsi untuk mengganti nama barang
     public void gantiNamaBarang() {
+        lihatBarang();
+
         // Meminta input dari pengguna untuk nama barang lama dan nama barang baru
         System.out.print("Masukkan nama barang yang akan diganti: ");
         String namaBarangLama = scanner.nextLine();
@@ -594,6 +649,8 @@ public class ManajemenStokGudang {
 
     // Fungsi untuk menghapus barang berdasarkan nama
     public void hapusBarang() {
+        lihatBarang();
+
         // Meminta pengguna memasukkan nama barang yang akan dihapus
         System.out.print("Masukkan nama barang yang akan dihapus: ");
         String namaBarang = scanner.nextLine();
@@ -668,7 +725,6 @@ public class ManajemenStokGudang {
         System.out.println("---------------------------------");
     }
 
-    // Fungsi untuk menampilkan stok barang di gudang
     public void lihatStok() {
         // Menampilkan judul informasi stok barang
         System.out.println("=== Stok Barang di Gudang ===");
@@ -683,24 +739,26 @@ public class ManajemenStokGudang {
                 // Menampilkan kategori dan nama barang
                 System.out.println("Kategori: " + barang.getKategori());
                 System.out.println("  Nama Barang: " + barang.getNama());
-            }
 
-            // Iterasi melalui setiap transaksi dalam transaksiGudang
-            for (Transaksi transaksi : transaksiGudang) {
-                // Memeriksa apakah nama barang tidak null dan stok barang lebih dari 0
-                if (barang.getNama() != null
-                        && barang.getNama().equalsIgnoreCase(transaksi.getNama())
-                        && !transaksi.getStok().matches("^[+-].*")) {
-                    /*
-                    * Jadi, secara keseluruhan,
-                    * bagian ini dari kode akan menghasilkan true
-                    * jika string transaksi.getStok() tidak sesuai dengan pola regex "^[+-].*",
-                    * yaitu jika string tersebut tidak dimulai dengan tanda plus atau tanda minus,
-                    * atau mengandung nol karakter setelah tanda plus atau tanda minus.
-                    * */
-                    // Menampilkan informasi stok barang
-                    System.out.println("  Stok Barang: " + transaksi.getStok());
+                // Menghitung total stok barang berdasarkan transaksi
+                int totalStok = 0;
+
+                // Iterasi melalui setiap transaksi dalam transaksiGudang
+                for (Transaksi transaksi : transaksiGudang) {
+                    // Memeriksa apakah nama barang tidak null dan stok barang lebih dari 0
+                    if (barang.getNama().equalsIgnoreCase(transaksi.getNama())
+                            && !transaksi.getStok().matches("^[+-].*")) {
+                        try {
+                            int stok = Integer.parseInt(transaksi.getStok());
+                            totalStok += stok;
+                        } catch (NumberFormatException e) {
+                            // Handle jika stok dalam transaksi bukan angka yang valid
+                        }
+                    }
                 }
+
+                // Menampilkan informasi stok barang
+                System.out.println("  Stok Barang: " + totalStok);
 
                 // Menandai bahwa ada barang yang ditampilkan
                 hasItems = true;
